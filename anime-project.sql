@@ -14,8 +14,9 @@ favourite VARCHAR(1),
 CONSTRAINT check_rating CHECK (rating <= 10),
 CONSTRAINT check_status CHECK ((status = 'UPCOMING')
 	OR (status = 'AIRING')
-	OR (status = 'COMPLETED')))
-
+	OR (status = 'COMPLETED')),
+CONSTRAINT check_favourite CHECK ((favourite = 'Y')
+	OR (favourite = NULL)))
 
 -- CREATE CHARACTERS TABLE --
 CREATE TABLE IF NOT EXISTS `characters` (
