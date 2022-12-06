@@ -198,7 +198,7 @@ BEGIN
 	DECLARE `match` BOOLEAN DEFAULT 1; -- boolean to flag if the character matches any characters, 1-TRUE 0-FALSE
 	DECLARE `ignore` CHAR(17) DEFAULT ' .,/?!@-_;:()[]{}'; -- characters to ignore when iterating
 	
-	SET outputString = inputString;
+	SET outputString = LOWER(inputString);
 	
 	WHILE i <= LENGTH(inputString) DO -- while i is less than inputString's length, continue to loop
 		BEGIN
