@@ -107,6 +107,24 @@ CONSTRAINT check_anime_types CHECK ((anime_types = 'TV SERIES')
 	OR (anime_types = 'OVA'))
 );
 
+-- =============== RECENTLY DELETED TABLE =============== --
+
+CREATE TABLE deleted_log (
+log_id INT PRIMARY KEY AUTO_INCREMENT,
+anime_id INT,
+anime_title VARCHAR(255),
+anime_type_id INT,
+opening_song INT,
+ending_song INT,
+rating INT,
+episodes INT,
+status VARCHAR(255),
+air_date DATE,
+end_date DATE,
+favourite BOOLEAN,
+timestamp TIMESTAMP
+);
+
 -- ==================== DATA INSERTION ==================== --
 
 -- =============== ANIME TYPES TABLE =============== --
@@ -119,23 +137,36 @@ INSERT INTO anime_types VALUES (NULL, 'TV SERIES'),
 -- =============== ARTISTS TABLE =============== --
 -- >> artist_id, f_name, l_name;
 
-INSERT INTO artists VALUES
+INSERT INTO artists VALUES (NULL, 'ClariS', NULL),
+(NULL, 'Sayuri', NULL),
+(NULL, 'RADWIMPS', NULL),
+;
 
 -- =============== SONGS TABLE =============== --
 -- >> song_id, song_title, artist_id, song_type, anime_title_id;
 
-INSERT INTO songs VALUES
+INSERT INTO songs VALUES (NULL, 'ALIVE', 1, 'OP', 2),
+(NULL, 'Hana no Tou', 2, 'ED', 2),
+(NULL, 'Sparkle', 3, 'INSERT', 1),
+
+;
 
 -- =============== CHARACTERS TABLE =============== --
 -- >> character_id, f_name, l_name, gender, anime_title_id
 
-INSERT INTO `characters` VALUES
+INSERT INTO `characters` VALUES (NULL, 'Mitsuha', 'Miyamizu', 'F', 1),
+(NULL, 'Taki', 'Tachibana', 'M', 1),
+(NULL, 'Chisato', 'Nishikigi', 'F', 2),
+(NULL, 'Takina', 'Inoue', 'F', 2)
+(NULL);
 
 -- =============== ANIME TABLE =============== --
 -- >> anime_id, anime_title_id, anime_type_id, opening_song, ending_song, rating, episodes, status, air_date, end_date, favourite
 
 INSERT INTO anime VALUES (NULL,'Kimi No Nawa', 2, NULL, NULL, 10, 24, 'COMPLETED', '2021-11-09', '2022-11-23', 0),
-(NULL, 'Lycoris Recoil', 1, OPsong, EDsong, )
+(NULL, 'Lycoris Recoil', 1, 1, 2, 'COMPLETED', '2022-07-02', '2022-09-24', 1),
+
+;
 
 -- ==================== VIEWS ==================== --
 
@@ -166,7 +197,10 @@ BEGIN
 	DECLARE i INT DEFAULT 1; -- start at 1 not 0 because not actual index
 	DECLARE `match` BOOLEAN DEFAULT 1; -- boolean to flag if the character matches any characters, 1-TRUE 0-FALSE
 	DECLARE `ignore` CHAR(17) DEFAULT ' .,/?!@-_;:()[]{}'; -- characters to ignore when iterating
-	WHILE i < = LENGTH(inputString) DO -- while i is less than inputString's length, continue to loop
+	
+	SET outputString = inputString;
+	
+	WHILE i <= LENGTH(inputString) DO -- while i is less than inputString's length, continue to loop
 		BEGIN
 			SET `char` = SUBSTRING(outputString, i, 1); -- stores single character at the iteration index to variable
 			IF LOCATE(`char`, `ignore`) > 0 THEN -- if character matches any characters to be ignored,
@@ -234,4 +268,19 @@ DELIMITER ;
 
 -- test --
 
-SELECT properCase('kee-fung anthony and his great adventure: the attack');
+SELECT properCapitalize('RAMI AND HIS AWESOME BURGERS: THE DELUXE');
+
+-- ==================== TRIGGER ==================== --
+
+DELIMITER //
+
+CREATE TRIGGER recently_deleted
+AFTER DELETE ON anime
+FOR EACH ROW
+BEGIN
+	INSERT INTO deleted_log (log_id, anime_id, anime_title, anime_type_id, opening_song, ending_song, rating, episodes, status, air_date, end_date, favourite, timestamp)
+    VALUES (NULL, OLD.anime_id, OLD.anime_title, OLD.anime_type_id, OLD.opening_song, OLD.ending_song, OLD.rating, OLD.episodes, OLD.status, OLD.air_date, OLD.end_date, OLD.favourite, NOW());
+END;
+//
+
+DELIMITER ;
