@@ -1,7 +1,7 @@
 -- ==================== TABLE CREATION ==================== --
 -- =============== ANIME TABLE =============== --
 
-	DROP TABLE IF EXISTS anime
+	DROP TABLE IF EXISTS anime;
 	
 CREATE TABLE IF NOT EXISTS anime (
 anime_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -9,8 +9,8 @@ anime_title VARCHAR(255) NOT NULL,
 anime_type_id INT NOT NULL,
 opening_song INT,
 ending_song INT,
-rating INT,
-episodes INT NOT NULL DEFAULT 1,
+rating DECIMAL(3,1) UNSIGNED,
+episodes INT,
 status VARCHAR(255) NOT NULL,
 air_date DATE,
 end_date DATE,
@@ -26,25 +26,22 @@ CONSTRAINT check_status CHECK ((status = 'UPCOMING')
 
 ALTER TABLE anime ADD FOREIGN KEY (anime_type_id)
 	REFERENCES anime_types(anime_type_id)
-	ON DELETE CASCADE
 	ON UPDATE CASCADE,
 ADD FOREIGN KEY (opening_song)
 	REFERENCES songs(song_id)
-	ON DELETE CASCADE
 	ON UPDATE CASCADE,
 ADD FOREIGN KEY (ending_song)
 	REFERENCES songs(song_id)
-	ON DELETE CASCADE
 	ON UPDATE CASCADE;
 	
 -- =============== CHARACTERS TABLE =============== --
 	
-	DROP TABLE IF EXISTS `characters`
+	DROP TABLE IF EXISTS `characters`;
 	
 CREATE TABLE IF NOT EXISTS `characters` (
 character_id INT PRIMARY KEY AUTO_INCREMENT,
-f_name VARCHAR(255) NOT NULL,
-l_name VARCHAR(255) NOT NULL,
+f_name VARCHAR(255),
+l_name VARCHAR(255),
 gender VARCHAR(1),
 anime_title_id INT NOT NULL,
 CONSTRAINT check_gender CHECK ((gender = 'M')
@@ -56,12 +53,11 @@ CONSTRAINT check_gender CHECK ((gender = 'M')
 	
 ALTER TABLE `characters` ADD FOREIGN KEY (anime_title_id)
 	REFERENCES anime(anime_id)
-	ON DELETE CASCADE
 	ON UPDATE CASCADE;
 	
 -- =============== SONGS TABLE =============== --
 	
-	DROP TABLE IF EXISTS songs
+	DROP TABLE IF EXISTS songs;
 	
 CREATE TABLE IF NOT EXISTS songs (
 song_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL UNIQUE,
@@ -78,16 +74,14 @@ CONSTRAINT check_song_type CHECK ((song_type = 'OP')
 
 ALTER TABLE songs ADD FOREIGN KEY (artist_id)
 	REFERENCES artists(artist_id)
-	ON DELETE CASCADE
 	ON UPDATE CASCADE,
 ADD FOREIGN KEY (anime_title_id)
 	REFERENCES anime(anime_id)
-	ON DELETE CASCADE
 	ON UPDATE CASCADE;
 
 -- =============== ARTISTS TABLE =============== --
 	
-	DROP TABLE IF EXISTS artists
+	DROP TABLE IF EXISTS artists;
 	
 CREATE TABLE IF NOT EXISTS artists (
 artist_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -97,7 +91,7 @@ l_name VARCHAR(255)
 
 -- =============== ANIME TYPES TABLE =============== --
 
-	DROP TABLE IF EXISTS anime_types
+	DROP TABLE IF EXISTS anime_types;
 	
 CREATE TABLE IF NOT EXISTS anime_types (
 anime_type_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -109,14 +103,16 @@ CONSTRAINT check_anime_types CHECK ((anime_types = 'TV SERIES')
 
 -- =============== RECENTLY DELETED TABLE =============== --
 
-CREATE TABLE deleted_log (
+	DROP TABLE IF EXISTS recently_deleted;
+
+CREATE TABLE recently_deleted (
 log_id INT PRIMARY KEY AUTO_INCREMENT,
 anime_id INT,
 anime_title VARCHAR(255),
 anime_type_id INT,
 opening_song INT,
 ending_song INT,
-rating INT,
+rating DECIMAL(3,1) UNSIGNED,
 episodes INT,
 status VARCHAR(255),
 air_date DATE,
@@ -140,7 +136,14 @@ INSERT INTO anime_types VALUES (NULL, 'TV SERIES'),
 INSERT INTO artists VALUES (NULL, 'ClariS', NULL),
 (NULL, 'Sayuri', NULL),
 (NULL, 'RADWIMPS', NULL),
-;
+(NULL, 'Kenshi', 'Yonezu'),
+(NULL, 'Vaundy', NULL),
+(NULL, 'King', 'Gnu'),
+(NULL, 'yama', NULL),
+(NULL, 'Machico', NULL),
+(NULL, 'Sora','Amamiya'),
+(NULL, 'angela', NULL),
+(NULL, 'Sumire', 'Uesaka');
 
 -- =============== SONGS TABLE =============== --
 -- >> song_id, song_title, artist_id, song_type, anime_title_id;
@@ -148,8 +151,16 @@ INSERT INTO artists VALUES (NULL, 'ClariS', NULL),
 INSERT INTO songs VALUES (NULL, 'ALIVE', 1, 'OP', 2),
 (NULL, 'Hana no Tou', 2, 'ED', 2),
 (NULL, 'Sparkle', 3, 'INSERT', 1),
-
-;
+(NULL, 'KICK BACK', 4, 'OP', 3),
+(NULL, 'CHAINSAW BLOOD', 5, 'ED', 3),
+(NULL, 'BOY', 6, 'OP', 4),
+(NULL, 'Oz.', 7, 'ED', 4),
+(NULL, 'Fantastic Dreamer', 8, 'OP', 5),
+(NULL, 'Chiisana Boukensha', 9, 'ED', 5),
+(NULL, 'TOMORROW', 8, 'OP', 6),
+(NULL, 'Ouchi ni Kaeitai', 9, 'ED', 6),
+(NULL, 'Zenryoku Summer!', 10, 'OP', 11),
+(NULL, 'Odore! Kyuukyoku Tetsugaku', 11, 'ED', 11);
 
 -- =============== CHARACTERS TABLE =============== --
 -- >> character_id, f_name, l_name, gender, anime_title_id
@@ -157,16 +168,51 @@ INSERT INTO songs VALUES (NULL, 'ALIVE', 1, 'OP', 2),
 INSERT INTO `characters` VALUES (NULL, 'Mitsuha', 'Miyamizu', 'F', 1),
 (NULL, 'Taki', 'Tachibana', 'M', 1),
 (NULL, 'Chisato', 'Nishikigi', 'F', 2),
-(NULL, 'Takina', 'Inoue', 'F', 2)
-(NULL);
+(NULL, 'Takina', 'Inoue', 'F', 2),
+(NULL, 'Denji', NULL, 'M', 3),
+(NULL, 'Power', NULL, 'F', 3),
+(NULL, 'Makima', NULL, 'F', 3),
+(NULL, 'Aki', 'Hayakawa', 'F', 3),
+(NULL, 'Bojji', NULL, 'M', 4),
+(NULL, 'Kage', NULL, 'X', 4),
+(NULL, 'Megumin', NULL, 'F', 5),
+(NULL, 'Aqua', NULL, 'F', 5),
+(NULL, 'Darkness', NULL, 'F', 5),
+(NULL, 'Kazuma', 'Satou', 'M', 5),
+(NULL, 'Megumin', NULL, 'F', 6),
+(NULL, 'Aqua', NULL, 'F', 6),
+(NULL, 'Darkness', NULL, 'F', 6),
+(NULL, 'Kazuma', 'Satou', 'M', 6),
+(NULL, 'Megumin', NULL, 'F', 7),
+(NULL, 'Aqua', NULL, 'F', 7),
+(NULL, 'Darkness', NULL, 'F', 7),
+(NULL, 'Kazuma', 'Satou', 'M', 7),
+(NULL, 'Megumin', NULL, 'F', 8),
+(NULL, 'Aqua', NULL, 'F', 8),
+(NULL, 'Darkness', NULL, 'F', 8),
+(NULL, 'Kazuma', 'Satou', 'M', 8),
+(NULL, 'Bojji', NULL, 'M', 9),
+(NULL, 'Kage', NULL, 'X', 9),
+(NULL, 'Megumin', NULL, 'F', 10),
+(NULL, 'Yunyun', NULL, 'F', 10),
+(NULL, 'Yoshiko', 'Hanabatake', 'F', 11),
+(NULL, 'Akuru', 'Akutsu', 'M', 11);
+
 
 -- =============== ANIME TABLE =============== --
 -- >> anime_id, anime_title_id, anime_type_id, opening_song, ending_song, rating, episodes, status, air_date, end_date, favourite
 
-INSERT INTO anime VALUES (NULL,'Kimi No Nawa', 2, NULL, NULL, 10, 24, 'COMPLETED', '2021-11-09', '2022-11-23', 0),
-(NULL, 'Lycoris Recoil', 1, 1, 2, 'COMPLETED', '2022-07-02', '2022-09-24', 1),
-
-;
+INSERT INTO anime VALUES (NULL,'Kimi No Nawa', 2, NULL, NULL, 8.6, 1, 'COMPLETED', '2021-11-09', '2022-11-23', 0),
+(NULL, 'Lycoris Recoil', 1, 1, 2, 8.6, 13, 'COMPLETED', '2022-07-02', '2022-09-24', 1),
+(NULL, 'Chainsaw Man', 1, 4, 5, 8.6, 12, 'AIRING', '2022-10-12', '2022-12-28', 0),
+(NULL, 'Ousama Ranking', 1, 6, 7, 8.5, 23, 'COMPLETED', '2021-10-15', '2022-03-25', 0),
+(NULL, 'KONOSUBA', 1, 8, 9, 8.1, 10, 'COMPLETED', '2016-01-14', '2016-03-17', 1),
+(NULL, 'KONOSUBA 2', 1, 11, 12, 8.2, 10, 'COMPLETED', '2017-01-12', '2017-03-16', 1),
+(NULL, 'KONOSUBA 2: God\'s Blessings on These Wonderful Works of Art!', 3, 11, 12, 7.8, 1, 'COMPLETED', '2017-07-24','2017-07-24', 0),
+(NULL, 'KONOSUBA 3', 1, NULL, NULL, NULL, NULL, 'UPCOMING', NULL, NULL, 0),
+(NULL, 'Ousama Ranking: Treasure Chest of Courage', 1, NULL, NULL, NULL, NULL, 'UPCOMING', '2023-04-01', NULL, 0),
+(NULL, 'KONOSUBA: An Explosion on This Wonderful World!', 1, NULL, NULL, NULL, NULL, 'UPCOMING', NULL, NULL, 0),
+(NULL, 'Aho-Girl', 1, 12, 13, 6.5, 12, 'COMPLETED', '2017-07-04', '2017-09-19', 0);
 
 -- ==================== VIEWS ==================== --
 
@@ -204,11 +250,11 @@ BEGIN
 		BEGIN
 			SET `char` = SUBSTRING(outputString, i, 1); -- stores single character at the iteration index to variable
 			IF LOCATE(`char`, `ignore`) > 0 THEN -- if character matches any characters to be ignored,
-				SET `match` = 1; -- set boolean to 1-TRUE to begin the capitalizing effort as it is likely a new word
-			ELSEIF `match` = 1 THEN -- else if match = 1-TRUE,
+				SET `match` = 1; -- set boolean to 1-TRUE
+			ELSEIF `match` = 1 THEN -- else if match already = 1-TRUE then current character is the next character after a punctuation;
 				BEGIN
-					IF `char` >= 'a' AND `char` <= 'z' THEN -- check if it is a alphabet/latin character through ascii value 
-					BEGIN
+					IF `char` >= 'a' AND `char` <= 'z' THEN -- check if it is an alphabet/latin character through ascii value 
+					BEGIN -- it is an alphabet character, so...
 						SET outputString = CONCAT(LEFT(outputString, i-1), UPPER(`char`), SUBSTRING(outputString, i+1)); -- caps and rebuilds string: cuts the string and everything to the LEFT of the index, capitalizes the character, and concats the remaining of the string; stored in that variable
 						SET `match` = 0; -- reset boolean to 0-FALSE
 					END;
@@ -217,7 +263,7 @@ BEGIN
 					END IF;
 				END;
 			END IF;
-			SET i = i+1;
+			SET i = i+1; -- next character increment
 		END;
 	END WHILE;
  -- uses the other function to assist in replacing the words that should NOT be capitlized in tite casing rules
@@ -239,6 +285,7 @@ BEGIN
 	SET outputString = dontCapitalize(outputString, 'Via');
 	RETURN outputString; 
 END;
+
 //
 
 -- HELPER FUNCTION TO NOT CAPITALIZE PREPOSITIONS AND ETC IN TITLES/NAMES/ETC --
@@ -262,6 +309,7 @@ BEGIN
 	END IF;
 	RETURN outputString;
 END;
+
 //
 
 DELIMITER ;
@@ -272,15 +320,25 @@ SELECT properCapitalize('RAMI AND HIS AWESOME BURGERS: THE DELUXE');
 
 -- ==================== TRIGGER ==================== --
 
+DROP TRIGGER recently_deleted
+
 DELIMITER //
 
-CREATE TRIGGER recently_deleted
+CREATE TRIGGER log_deleted
 AFTER DELETE ON anime
 FOR EACH ROW
 BEGIN
-	INSERT INTO deleted_log (log_id, anime_id, anime_title, anime_type_id, opening_song, ending_song, rating, episodes, status, air_date, end_date, favourite, timestamp)
+	INSERT INTO recently_deleted (log_id, anime_id, anime_title, anime_type_id, opening_song, ending_song, rating, episodes, status, air_date, end_date, favourite, timestamp)
     VALUES (NULL, OLD.anime_id, OLD.anime_title, OLD.anime_type_id, OLD.opening_song, OLD.ending_song, OLD.rating, OLD.episodes, OLD.status, OLD.air_date, OLD.end_date, OLD.favourite, NOW());
 END;
+
 //
 
 DELIMITER ;
+
+-- test --
+
+DELETE FROM anime WHERE anime_id = 11;
+
+
+SET foreign_key_checks = 1;
