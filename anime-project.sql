@@ -251,7 +251,8 @@ BEGIN
 			SET `char` = SUBSTRING(outputString, i, 1); -- stores single character at the iteration index to variable
 			IF LOCATE(`char`, `ignore`) > 0 THEN -- if character matches any characters to be ignored,
 				SET `match` = 1; -- set boolean to 1-TRUE
-			ELSEIF `match` = 1 THEN -- else if match already = 1-TRUE then current character is the next character after a punctuation;
+				-- else if match already from previous IF statement = 1-TRUE then current character is the next character after a punctuation;
+			ELSEIF `match` = 1 THEN 
 				BEGIN
 					IF `char` >= 'a' AND `char` <= 'z' THEN -- check if it is an alphabet/latin character through ascii value 
 					BEGIN -- it is an alphabet character, so...
